@@ -1,3 +1,4 @@
+
 from pathlib import Path
 import numpy as np
 import pandas as pd
@@ -5,12 +6,17 @@ import plotly.express as px
 import streamlit as st
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
+# This script builds a Streamlit dashboard to explore insurance charges and compare model predictions against actual values.
+
+# Configure the Streamlit app so it opens as a full-width dashboard with a custom theme.
 st.set_page_config(page_title="Insurance Charge Predictions", page_icon="📊", layout="wide", initial_sidebar_state="collapsed")
 
+# Define the dashboard palette used for smoker and sex comparison charts.
 DARK_BLUE, BRIGHT_BLUE = "#14558A", "#1680E5"
 SMOKER_COLOURS = {"no": DARK_BLUE, "yes": BRIGHT_BLUE}
 SEX_COLOURS = {"female": DARK_BLUE, "male": BRIGHT_BLUE}
 
+# Add dashboard styling to create the custom blue/green insurance reporting layout.
 st.markdown("""
 <style>
 .stApp{background:#102D70}
@@ -38,6 +44,7 @@ div[data-testid="stPlotlyChart"]{background:white;border-radius:3px;padding:2px}
 div.stButton>button{background:#A6BDD5;color:#252525;border:1px solid #102D70;border-radius:2px;font-weight:600;min-height:54px;width:100%}
 </style>""", unsafe_allow_html=True)
 
+# Resolve the project directory and locate the processed customer and prediction CSV files.
 BASE_DIR = Path(__file__).resolve().parent
 OUTPUT_DIR = BASE_DIR / "Output"
 if not OUTPUT_DIR.exists():
@@ -45,18 +52,22 @@ if not OUTPUT_DIR.exists():
 CUSTOMER_PATH = OUTPUT_DIR / "cleaned_insurance.csv"
 PREDICTION_PATH = OUTPUT_DIR / "insurance_predictions.csv"
 
+# Reuse cached reads so the dashboard loads quickly when the page refreshes.
 @st.cache_data
 def read_csv(path):
     return pd.read_csv(path)
 
+# Ensure both required datasets exist before proceeding; otherwise stop the app with a clear message.
 for path in (CUSTOMER_PATH, PREDICTION_PATH):
     if not path.exists():
         st.error(f"Required dataset not found: {path}")
         st.stop()
 
+# Load the cleaned dataset and model outputs, then normalize the text columns so filters and comparisons behave consistently.
 customers = read_csv(str(CUSTOMER_PATH))
 predictions = read_csv(str(PREDICTION_PATH))
 
+# Standardize string values and create an age-band field for dashboard filtering and summaries.
 def prepare(df):
     df = df.copy()
     for col in ["sex", "smoker", "region", "bmi_category"]:
@@ -71,6 +82,7 @@ def prepare(df):
 
 customers, predictions = prepare(customers), prepare(predictions)
 
+# Define the three dashboard pages shown in the top navigation bar.
 PAGES = ["Customer Characteristics", "Charge Distribution", "Machine-Learning Performance"]
 if "active_page" not in st.session_state:
     st.session_state.active_page = PAGES[0]
@@ -103,6 +115,7 @@ div[data-testid="stRadio"] div[role="radiogroup"] label {
 </style>
 """, unsafe_allow_html=True)
 
+# Allow the user to switch between the customer overview, charge analysis, and model evaluation views.
 page = st.radio(
     "Navigation",
     options=PAGES,
@@ -118,6 +131,7 @@ subtitle = {
 }[page]
 st.markdown(f'<div class="dashboard-header"><i>Insurance charge predictions</i><br>{subtitle}</div>', unsafe_allow_html=True)
 
+# Store the active filter selections so the dashboard can apply them consistently across charts.
 FILTER_KEYS = ["filter_smoker","filter_bmi","filter_age","filter_region"]
 for k in FILTER_KEYS:
     if k not in st.session_state:
@@ -127,8 +141,10 @@ def clear_filters():
     for k in FILTER_KEYS:
         st.session_state[k] = []
 
+# Split the layout into the main content area and the side filter panel.
 main_col, filter_col = st.columns([5.8,1.0], gap="small")
 with filter_col:
+    # Filter the data by smoking status to compare insured customers with and without smoking history.
     with st.container():
         st.markdown('<div class="filter-heading">Smoker</div>', unsafe_allow_html=True)
         st.multiselect(
@@ -139,6 +155,7 @@ with filter_col:
             placeholder="All smokers",
         )
 
+    # Filter by BMI category to group customers by health-risk ranges and review charge differences.
     with st.container():
         st.markdown('<div class="filter-heading">BMI Category</div>', unsafe_allow_html=True)
         st.multiselect(
@@ -149,6 +166,7 @@ with filter_col:
             placeholder="All BMI categories",
         )
 
+    # Build the age category list in a logical order so the dashboard reads clearly from young to senior customers.
     age_order = ["18-25 Young Adult","26-35 Adult","36-45 Middle-aged","46-55 Mature Adult","56+ Senior"]
     age_opts = [x for x in age_order if x in customers.age_category.astype(str).unique().tolist()]
     with st.container():
@@ -161,6 +179,7 @@ with filter_col:
             placeholder="All age groups",
         )
 
+    # Filter by geography so regional differences in insurance costs can be examined.
     with st.container():
         st.markdown('<div class="filter-heading">Region</div>', unsafe_allow_html=True)
         st.multiselect(
@@ -198,6 +217,8 @@ with filter_col:
         )
     }[page]), unsafe_allow_html=True)
 
+# Apply the selected filter values to both customer and prediction data before plotting.
+# This keeps all charts and KPI cards aligned with the same user-selected data slice.
 def apply_filters(df):
     out = df.copy()
     for key, col in [("filter_smoker","smoker"),("filter_bmi","bmi_category"),("filter_region","region")]:
@@ -210,11 +231,15 @@ def apply_filters(df):
 cust = apply_filters(customers)
 pred = apply_filters(predictions)
 
+# Standard visual styling for all Plotly charts in the dashboard.
+# This ensures a consistent white background, grid, and spacing across every chart.
 def theme(fig, height=260, bottom=42):
     fig.update_layout(height=height, margin=dict(l=35,r=8,t=48,b=bottom), paper_bgcolor="white", plot_bgcolor="white", font=dict(color="#555"), legend=dict(orientation="h",yanchor="bottom",y=1.0,xanchor="left",x=0))
     fig.update_xaxes(gridcolor="#DDD"); fig.update_yaxes(gridcolor="#DDD")
     return fig
 
+# Create the KPI cards and a filter reset button for each dashboard page.
+# These cards give a quick summary of the current filtered dataset before the detailed charts.
 def kpis(items, key):
     cols = st.columns([1,1,1,1,1.65], gap="small")
     for col,(value,label) in zip(cols[:4],items):
@@ -223,6 +248,8 @@ def kpis(items, key):
     with cols[4]:
         st.button("Clear all filters",on_click=clear_filters,key=key,use_container_width=True)
 
+# --- Customer Characteristics page ---
+# This page shows how insurance charges differ across key customer attributes.
 if page == "Customer Characteristics":
     with main_col:
         if cust.empty:
@@ -253,6 +280,8 @@ if page == "Customer Characteristics":
             f=px.histogram(cust,x="charges",y="charges",color="smoker",histfunc="sum",nbins=30,barmode="overlay",opacity=.8,color_discrete_map=SMOKER_COLOURS,title="Sum of charges by charges (bins) and smoker")
             f.update_xaxes(tickformat="~s"); f.update_yaxes(tickformat="~s"); st.plotly_chart(theme(f,275),use_container_width=True)
 
+# --- Charge Distribution page ---
+# This section highlights the spread and patterns of insurance charges across groups.
 elif page == "Charge Distribution":
     with main_col:
         if cust.empty:
@@ -273,22 +302,29 @@ elif page == "Charge Distribution":
             f=px.scatter(cust,x="bmi",y="charges",color="smoker",color_discrete_map=SMOKER_COLOURS,title="BMI versus charges by smoking status",hover_data=["age","region","sex"])
             st.plotly_chart(theme(f,330),use_container_width=True)
 
+# --- Machine-Learning Performance page ---
+# This page evaluates how well the prediction model performs on the filtered dataset.
 elif page == "Machine-Learning Performance":
     with main_col:
+        # Validate the prediction table before computing model metrics.
         if not {"charges","predicted_charges"}.issubset(pred.columns):
             st.error("Prediction file must contain charges and predicted_charges."); st.stop()
         ml=pred.copy()
+        # Convert numeric columns to a consistent type so the evaluation metrics are calculated correctly.
         ml["charges"]=pd.to_numeric(ml["charges"],errors="coerce")
         ml["predicted_charges"]=pd.to_numeric(ml["predicted_charges"],errors="coerce")
         ml=ml.dropna(subset=["charges","predicted_charges"])
         if ml.empty:
             st.warning("No prediction rows match these filters."); st.stop()
         # Error sign follows the common convention: predicted minus actual.
+        # Positive values mean overprediction, while negative values indicate underprediction.
         ml["error"]=ml["predicted_charges"]-ml["charges"]
+        # Compute the main evaluation metrics used to judge model quality.
         r2=r2_score(ml.charges,ml.predicted_charges) if len(ml)>1 else np.nan
         mae=mean_absolute_error(ml.charges,ml.predicted_charges)
         rmse=np.sqrt(mean_squared_error(ml.charges,ml.predicted_charges))
         kpis([(f"{len(ml):,}","Total Customers"),(f"{r2:.2f}" if np.isfinite(r2) else "N/A","R Squared"),(f"{mae/1000:.2f}K","MAE"),(f"{rmse/1000:.2f}K","RMSE")],"clear_ml")
+        # Categorize prediction quality based on how far the forecast is from the true charge value.
         ml["accuracy_category"]=np.select([ml.error > 500,ml.error < -500],["Overprediction > 500","Underprediction < -500"],default="Accurate Prediction")
         accuracy=["Accurate Prediction","Overprediction > 500","Underprediction < -500"]
         st.markdown('<div style="height:14px"></div>', unsafe_allow_html=True)
@@ -304,6 +340,7 @@ elif page == "Machine-Learning Performance":
                 key="prediction_accuracy_category",
             )
         # An empty selection means all categories, matching the Power BI slicer convention.
+        # This allows the user to focus only on overpredictions, underpredictions, or accurate results.
         m=ml if not chosen else ml[ml.accuracy_category.isin(chosen)].copy()
         if m.empty:
             st.info("No rows match the selected accuracy categories.")
