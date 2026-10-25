@@ -1,36 +1,43 @@
-# Healthcare Insurance Cost Analysis and Prediction
+# ![CI logo](https://codeinstitute.s3.amazonaws.com/fullstack/ci_logo_small.png)
+# Healthcare Insurance Cost Analysis — Assessment 3
 
 ## Project Overview
 
-This project applies data analytics, statistical hypothesis testing, machine learning, and business intelligence to investigate healthcare insurance charges and predict individual insurance costs.
+This project develops an interactive data application for exploring healthcare insurance charges and communicating data-driven insights. It builds on work completed for Assessment 2, which used the `insurance.csv` dataset for data cleaning, exploratory data analysis (EDA), statistical hypothesis testing, machine-learning regression, and Power BI reporting.
 
-Using Python, Jupyter Notebook, and Power BI, the project follows an end-to-end analytical workflow: data inspection and cleaning, exploratory data analysis (EDA), statistical testing, regression modelling, model evaluation, and interactive dashboard development.
+**Assessment 3 reuses the previous project as a starting point.** The earlier analysis and its findings provide the foundation for this stage; they are not presented as if all the work were newly created. The main development in this stage is a new interactive dashboard built with **Streamlit**. Plotting issues identified in the earlier project were also reviewed and resolved, and code and visualisations were adjusted to improve how results are displayed.
 
-The analysis investigates how demographic and lifestyle characteristics—including age, body mass index (BMI), smoking status, sex, number of children, and geographic region—are associated with healthcare insurance charges. It also compares several regression algorithms to identify a suitable model for predicting charges.
+The application explores how age, body mass index (BMI), smoking status, sex, number of children, and region are associated with healthcare insurance charges. These patterns are descriptive and do not establish causation. Model performance on this dataset does not guarantee equivalent performance for other populations.
 
-A three-page Power BI report communicates the results through interactive views of customer characteristics, charge distributions, and machine-learning performance. Users can explore the results using filters for smoking status, BMI category, age category, and region.
+## Project Rationale and Objectives
 
-The results describe patterns and associations in the available dataset. They do not establish causation, and predictive performance on this dataset does not guarantee equivalent performance on other populations.
+The project aims to make the analysis accessible to users who want to explore insurance-charge patterns without running the analysis notebooks themselves. Objectives are to:
 
-## Project Objectives
+- Inspect, clean, validate, and prepare the dataset.
+- Explore charge distributions, potential outliers, and relationships with available characteristics.
+- Investigate differences and associations using statistical tests.
+- Develop and evaluate regression models.
+- Present useful results through a Streamlit dashboard.
+- Resolve plotting issues and improve the clarity of visual communication.
+- Communicate limitations and recommendations responsibly.
+- Document development decisions, ethical considerations, AI assistance, and future maintenance.
 
-The main objectives are to:
+## Target Audience and Business Questions
 
-- Inspect, clean, validate, and prepare the healthcare insurance dataset.
-- Explore distributions, potential outliers, and relationships between insurance charges and customer characteristics.
-- Create BMI categories and investigate combined patterns involving BMI and smoking status.
-- Apply statistical hypothesis tests to investigate differences and associations in insurance charges.
-- Develop and compare machine-learning regression models.
-- Evaluate predictive performance using a held-out test set and cross-validation.
-- Examine prediction errors and permutation feature importance.
-- Build interactive Power BI dashboards to communicate the findings.
-- Discuss limitations, potential business implications, and responsible interpretation of the results.
+The intended audience includes people who want to explore healthcare insurance charge patterns, including non-technical users. The dashboard should explain what each visualisation shows in clear language.
+
+The project investigates questions such as:
+
+- How do charges vary with age and BMI?
+- How do observed charges differ between smokers and non-smokers?
+- How do charges vary across the available demographic and regional categories?
+- How well does the evaluated regression model predict charges in the test data?
+- Which features contribute most to the fitted model's predictions?
+- What limitations should users consider when interpreting the results?
 
 ## Dataset
 
-The project uses the healthcare insurance dataset provided for the assessment, stored as `insurance.csv`.
-
-The original dataset contains **1,338 observations and 7 columns**.
+The project uses the healthcare insurance dataset supplied for the earlier assessment, stored as `insurance.csv`. The original dataset contains **1,338 observations and 7 columns**.
 
 | Variable | Description |
 |---|---|
@@ -42,274 +49,153 @@ The original dataset contains **1,338 observations and 7 columns**.
 | `region` | Geographic region |
 | `charges` | Healthcare insurance charges |
 
-One exact duplicate record was removed from the analytical dataset, leaving **1,337 observations**. An additional BMI-category feature was created for exploratory analysis and reporting. The original raw dataset was retained unchanged.
+One exact duplicate record was removed from the analytical dataset, leaving **1,337 observations**. A BMI-category feature was created for exploratory analysis. The raw dataset was retained unchanged. Potential outliers were investigated but not automatically removed because unusually high charges may be genuine observations.
 
-Potential outliers were investigated but were not automatically removed because unusually high insurance charges may represent genuine observations.
+## Reuse of Assessment 2 Work and Assessment 3 Changes
 
-## Project Structure
+Assessment 3 builds on the earlier Assessment 2 project. The existing dataset, analytical workflow, statistical results, machine-learning work, and lessons learned provide a starting point. This reuse is acknowledged explicitly to make the development history transparent.
 
-The project is organised into three Jupyter notebooks, supporting data files, and project documentation.
+The main activities in this stage are:
 
-```text
-Healthcare-Insurance-Cost-Analysis/
-│
-├── data/
-│   └── insurance.csv
-│
-├── output/
-│   ├── cleaned_insurance.csv
-│   └── insurance_predictions.csv
-│
-├── notebooks/
-│   ├── 01_data_cleaning_and_eda.ipynb
-│   ├── 02_statistical_analysis.ipynb
-│   └── 03_machine_learning.ipynb
-│
-├── README.md
-├── requirements.txt
-└── .gitignore
-```
+- Developing a new interactive dashboard with **Streamlit**.
+- Reviewing and resolving plotting problems encountered in the earlier project.
+- Adjusting code and visualisations to improve presentation and interpretation.
+- Improving the communication of findings for the intended audience.
+- Giving greater attention to ethical, legal, and social implications.
 
-This is the intended project structure. Confirm the actual folder names and file locations in the repository before submission. In particular, the notebooks should use consistent paths for the cleaned dataset and prediction output.
+The interactive Power BI report belonged to Assessment 2. The new Streamlit dashboard is the focus of the Assessment 3 application. 
 
-## Analytical Workflow
+## Previous Analytical Workflow and Findings
 
-### 1. Data Cleaning and Exploratory Data Analysis
+### Exploratory Data Analysis
 
-**Notebook:** `01_data_cleaning_and_eda.ipynb`
+The earlier workflow inspected data types, descriptive statistics, missing values, and duplicate records. It investigated potential outliers using the Interquartile Range (IQR) method and box plots, created BMI categories, and explored charges by age, BMI, smoking status, sex, number of children, and region.
 
-The first notebook inspects and prepares the dataset before exploring its characteristics. The workflow includes:
+The recorded exploratory findings were:
 
-- Inspecting the dataset dimensions, column names, data types, and descriptive statistics.
-- Checking missing values and duplicate records.
-- Removing one exact duplicate record from the analytical dataset.
-- Investigating potential outliers using the Interquartile Range (IQR) method and box plots.
-- Retaining potential outliers that may represent valid observations.
-- Creating BMI categories while retaining the continuous BMI variable.
-- Examining the distribution of insurance charges.
-- Comparing charges by age, BMI, smoking status, sex, number of children, and region.
-- Exploring the combined relationship between BMI, smoking status, and insurance charges.
-- Using descriptive statistics, scatter plots, box plots, distribution plots, and correlation visualisations to identify patterns.
-
-#### Main EDA findings
-
-- Insurance charges have a strongly right-skewed distribution, with a smaller number of observations showing very high charges.
+- Insurance charges have a strongly right-skewed distribution, with a smaller number of very high charges.
 - Smokers generally have substantially higher charges than non-smokers.
 - Charges tend to increase with age.
-- The obese BMI category has the highest median charges among the BMI categories examined.
-- Differences by sex and region appear smaller than those associated with smoking status.
-- The number of children does not show a clear monotonic pattern with charges.
-- Investigating BMI and smoking status together provides additional insight into differences in charge distributions.
+- The obese BMI category had the highest median charges among the BMI categories examined.
+- Differences by sex and region appeared smaller than those associated with smoking status.
+- The number of children did not show a clear monotonic pattern with charges.
+- Examining BMI and smoking status together provided additional insight into charge distributions.
 
-These findings are descriptive and do not establish causal relationships.
+These are descriptive observations and do not demonstrate cause and effect.
 
-### 2. Statistical Analysis and Hypothesis Testing
+### Statistical Analysis
 
-**Notebook:** `02_statistical_analysis.ipynb`
+The earlier project used a significance level of **0.05** for three tests.
 
-The second notebook investigates three research questions using hypothesis tests. The significance level is **0.05** for all three tests.
+| Research question | Test | Recorded result | Interpretation |
+|---|---|---|---|
+| Do charge distributions differ between smokers and non-smokers? | Two-sided Mann–Whitney U | U = 7,403; p = 5.75 × 10⁻¹³⁰ | Statistically significant difference |
+| Is age associated with charges? | Spearman correlation | ρ = 0.5335; p = 3.19 × 10⁻⁹⁹ | Moderately strong positive monotonic association |
+| Is BMI associated with charges? | Spearman correlation | ρ = 0.1196; p = 1.16 × 10⁻⁵ | Weak positive monotonic association |
 
-#### Research question 1: Do insurance-charge distributions differ between smokers and non-smokers?
+All three tests were statistically significant at the 0.05 level. Statistical significance does not necessarily mean that a relationship is strong, and these tests do not establish causation.
 
-A two-sided Mann–Whitney U test compares the insurance charges of the two independent groups.
+### Machine Learning
 
-- **Null hypothesis (H₀):** The charge distributions are the same for smokers and non-smokers.
-- **Alternative hypothesis (H₁):** The charge distributions differ between smokers and non-smokers.
-
-#### Research question 2: Is age associated with insurance charges?
-
-Spearman's rank correlation examines the direction and strength of the monotonic association between age and charges.
-
-- **Null hypothesis (H₀):** There is no monotonic association between age and charges.
-- **Alternative hypothesis (H₁):** There is a monotonic association between age and charges.
-
-#### Research question 3: Is BMI associated with insurance charges?
-
-Spearman's rank correlation examines the monotonic association between BMI and charges.
-
-- **Null hypothesis (H₀):** There is no monotonic association between BMI and charges.
-- **Alternative hypothesis (H₁):** There is a monotonic association between BMI and charges.
-
-#### Statistical results
-
-| Research question | Statistical test | Statistic / coefficient | p-value |
-|---|---|---:|---:|
-| Smoking status and charges | Mann–Whitney U | 7,403 | 5.75 × 10⁻¹³⁰ |
-| Age and charges | Spearman's rank correlation | 0.5335 | 3.19 × 10⁻⁹⁹ |
-| BMI and charges | Spearman's rank correlation | 0.1196 | 1.16 × 10⁻⁵ |
-
-All three tests are statistically significant at the 0.05 level.
-
-- **Smoking status:** The test identifies a statistically significant difference between the charge distributions. The observed median charge was approximately 34,456 for smokers and 7,346 for non-smokers.
-- **Age:** The results indicate a moderately strong positive monotonic association between age and charges.
-- **BMI:** The results indicate a statistically significant but weak positive monotonic association between BMI and charges.
-
-Statistical significance does not necessarily imply a strong relationship. The tests do not demonstrate that these characteristics cause changes in insurance charges.
-
-### 3. Machine Learning and Prediction
-
-**Notebook:** `03_machine_learning.ipynb`
-
-The third notebook develops regression models to predict healthcare insurance charges. The target variable is `charges`, and the selected demographic and lifestyle variables are used as input features.
-
-The workflow includes:
-
-- Validating the cleaned dataset before modelling.
-- Separating input features from the target variable.
-- Splitting the data into 80% training and 20% testing subsets.
-- Creating a mean-based `DummyRegressor` baseline.
-- Building preprocessing and regression pipelines.
-- Comparing Linear Regression, Ridge Regression, Random Forest, Extra Trees, and Gradient Boosting.
-- Using five-fold cross-validation to compare model performance.
-- Selecting Gradient Boosting as the leading candidate based on cross-validation.
-- Evaluating the selected model on the held-out test set.
-- Examining actual-versus-predicted values and residuals.
-- Investigating permutation feature importance.
-- Exporting predictions to `output/insurance_predictions.csv`.
-
-#### Model evaluation
-
-The models are evaluated using:
-
-- **Mean Absolute Error (MAE):** the average absolute difference between actual and predicted charges.
-- **Root Mean Squared Error (RMSE):** a measure that gives greater weight to larger prediction errors.
-- **R²:** a measure of the proportion of target variation explained by the model relative to a mean-based reference.
-
-#### Recorded model results
+The earlier project compared regression models for predicting `charges`, using an 80% training and 20% test split, a mean-based `DummyRegressor` baseline, preprocessing pipelines, and five-fold cross-validation. The evaluated algorithms included Linear Regression, Ridge Regression, Random Forest, Extra Trees, and Gradient Boosting.
 
 | Evaluation stage | MAE | RMSE | R² |
 |---|---:|---:|---:|
 | Mean baseline — test set | 9,861.80 | 13,612.43 | -0.0084 |
 | Linear Regression — test set | 4,338.92 | 6,024.00 | 0.8025 |
-| Gradient Boosting — five-fold cross-validation mean | 2,679.82 | 4,592.16 | 0.8433 |
+| Gradient Boosting — cross-validation mean | 2,679.82 | 4,592.16 | 0.8433 |
 | Gradient Boosting — final test set | 2,603.04 | 4,370.82 | 0.8960 |
 
-Gradient Boosting was the leading candidate among the evaluated models based on five-fold cross-validation. On the held-out test set, it achieved an MAE of **2,603.04**, an RMSE of **4,370.82**, and an R² of **0.8960**.
+Gradient Boosting was the leading candidate based on the recorded cross-validation results. Its held-out test-set R² was 0.8960. However, some high-charge cases were substantially underestimated. Permutation feature importance identified smoking status as the most influential feature, followed by age and BMI. Feature importance describes the fitted model's predictive behaviour; it does not establish causation.
 
-The actual-versus-predicted plot and residual analysis indicate that the model predicts many observations reasonably well, but some high-charge cases are substantially underestimated. This is an important limitation when interpreting its overall performance.
+These results are carried forward from Assessment 2. Before submission, verify that the current notebooks and Streamlit dashboard show consistent values and clearly distinguish cross-validation metrics from held-out test-set metrics.
 
-Permutation feature importance identified **smoking status** as the most influential feature, followed by **age** and **BMI**. Other features, including children, region, and sex, had comparatively lower predictive importance in this fitted model. Feature importance describes how the model uses the available information; it does not establish causation.
 
-## Power BI Dashboard
+## Streamlit Dashboard
 
-The project includes an interactive Power BI report titled **Insurance Charge Predictions**, organised into three pages.
+The dashboard is intended to help users explore healthcare insurance charges, understand patterns across customer groups, and evaluate machine-learning predictions and their limitations.
 
-### Page 1 — Customer Characteristics
+Developed with **Streamlit** for Assessment 3, it builds on the analysis completed in Assessment 2 and contains three pages:
 
-This page presents customer and charge indicators, including the smoker percentage, average BMI, average charges, and total customers. Visualisations compare average charges by smoking status and region, show charges against age, and examine the combined patterns of BMI category, smoking status, and sex.
+- **Customer Characteristics:** Compares charges by smoking status, region, age, BMI category, and sex.
+- **Charge Distribution:** Uses histograms, box plots, violin plots, and scatter plots to explore charge distributions and relationships between variables.
+- **Machine-Learning Performance:** Presents model metrics (R², MAE, and RMSE), prediction-error charts, and predicted-versus-actual charges.
 
-### Page 2 — Charge Distribution
+Shared filters allow users to explore smoking status, BMI category, age category, and region. A *Clear all slicers* control resets the filters, while the machine-learning page includes a prediction-accuracy filter.
 
-This page investigates the distribution of insurance charges using charge bins and comparisons by smoking status. Additional visuals summarise average charges by BMI category, age category, and smoking status.
+## Ethics, Privacy, Governance, and Responsible Use
 
-### Page 3 — Machine-Learning Performance
+Ethical practice is a central consideration in this project, particularly because it concerns healthcare-related data and insurance charges. The dataset includes demographic and lifestyle variables that may raise concerns about privacy, stereotyping, fairness, and the consequences of decisions made using predictions.
 
-This page presents model-performance indicators, including R², MAE, and RMSE, alongside visualisations of prediction errors by BMI category, sex, smoking status, and charge range. An actual-versus-predicted-style scatter plot supports the visual investigation of model predictions.
+### Ethical issues and data governance
 
-### Interactive features
+The analysis is limited to the variables in the supplied dataset. Data preparation should be documented, the original raw data should be retained unchanged, and unnecessary personal information should not be collected or exposed. The dashboard and README should explain the dataset's scope and limitations.
 
-The report includes slicers for:
+Observed associations between smoking status, age, BMI, and charges must not be presented as proof that these characteristics cause a particular charge. The dataset may not represent every population, insurance arrangement, or current circumstance.
 
-- Smoking status.
-- BMI category.
-- Age category.
-- Geographic region.
+### Legal and social implications
 
-The report also includes a **Clear all slicers** control and a prediction-accuracy category filter on the machine-learning performance page.
+Insurance-related predictions can have financial and social consequences. Using demographic or lifestyle characteristics to make decisions about individuals could create or reinforce unfair outcomes. This project is an educational and exploratory application, not a validated system for determining premiums, eligibility, access to healthcare, or an individual's entitlement to support.
 
-The Power BI pages support interactive investigation of subsets of the data. Values shown in filtered views depend on the active slicers and should not be interpreted as full-dataset results unless all filters are cleared. The model-performance figures displayed in Power BI should also be checked against the final evaluation in the machine-learning notebook before final submission, so that the evaluation dataset and metrics are clearly identified.
+The project does not claim that the model has been approved for operational use or has passed a comprehensive fairness or legal-compliance assessment. Before real-world deployment, further work would be needed, including appropriate legal and data-protection review, checks of data representativeness, fairness testing across relevant groups, external validation, and human oversight.
+
+### Responsible interpretation
+
+The dataset contains a limited set of features and may omit important determinants of healthcare costs. Potential outliers were retained because they may be genuine observations. Model errors—particularly the underestimation of some high-charge cases—should be disclosed. Statistical significance and feature importance must not be confused with causation.
+
+The dashboard should use clear language, avoid overstating predictive accuracy, and make limitations visible to technical and non-technical users. Predictions should not be the sole basis for decisions that could unfairly disadvantage individuals.
+
+## AI Use and Acknowledgement
+
+AI tools were used as supporting tools during development. Their use was concentrated mainly on **Streamlit development, code assistance, debugging, and code adjustments**, including help reviewing plotting problems and improving how the dashboard presents information. AI was also used to help clarify requirements and improve documentation and wording.
+
+AI suggestions were not treated as automatically correct. The code, outputs, plots, and explanations were reviewed and tested against the actual data and intended behaviour. 
+
+
+## Planning, Version Control, and Evaluation
+
+The project plan and development history should show how tasks, progress, issues, and improvements were managed during development. Git and GitHub provide version control for tracking changes to the code and documentation. Clear commit messages—such as `Fix plot labels` or `Add Streamlit dashboard`—make individual changes easier to understand.
+
+The application should be evaluated against its purpose and requirements. Relevant checks include dashboard functionality, plot clarity, consistency of displayed results, accessibility, usability, and whether the project hypotheses have been addressed. Maintenance considerations include dependency updates, error correction, and revalidation when data or code changes.
+
+**Submission check:** Add the project-board link and report only testing and evaluation activities that were actually completed. The README alone does not provide evidence that these checks have been performed.
 
 ## Tools and Technologies
+
+The earlier analysis used:
 
 - **Python** — data analysis and machine learning.
 - **Jupyter Notebook** — interactive analysis and documentation.
 - **pandas** and **NumPy** — data manipulation and numerical operations.
 - **Matplotlib** and **Seaborn** — statistical visualisation.
 - **SciPy** — statistical hypothesis testing.
-- **scikit-learn** — preprocessing, regression models, train–test splitting, cross-validation, evaluation, and permutation feature importance.
-- **Power BI Desktop** — interactive reporting and dashboard development.
+- **scikit-learn** — preprocessing, regression models, cross-validation, evaluation, and permutation feature importance.
+- **Power BI Desktop** — reporting developed for Assessment 2.
+- **Streamlit** — interactive dashboard developed for Assessment 3.
 - **Git and GitHub** — version control and project management.
 
-## How to Run the Project
+## Limitations and Future Improvements
 
-### Prerequisites
+The analysis is limited by the available dataset and selected features. It does not establish causal relationships, and performance on one test set does not guarantee performance on other populations or future data. Some high-charge observations were substantially underestimated.
 
-Install Python and Jupyter Notebook. The notebooks use the data-analysis, visualisation, statistical, and machine-learning libraries listed above. Power BI Desktop is required to open and interact with the Power BI report.
-
-### Installation
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/Ali-Behdad/code-institute-_-Assessment-2-Healthcare-Insurance-ML.git
-   ```
-
-2. Navigate to the project directory:
-
-   ```bash
-   cd code-institute-_-Assessment-2-Healthcare-Insurance-ML
-   ```
-
-3. Optionally create and activate a virtual environment.
-
-4. Install the dependencies:
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-5. Start Jupyter Notebook:
-
-   ```bash
-   jupyter notebook
-   ```
-
-### Execution order
-
-Run the notebooks in the following order:
-
-1. `01_data_cleaning_and_eda.ipynb` — clean and explore the data.
-2. `02_statistical_analysis.ipynb` — conduct the statistical tests.
-3. `03_machine_learning.ipynb` — train and evaluate the prediction models.
-
-Ensure that the cleaned dataset is saved to the path expected by the later notebooks. Check that the input and output paths are consistent with the actual repository structure before running the complete workflow.
-
-To explore the interactive report, open the Power BI report file in Power BI Desktop. The report file should be included in the repository or linked from the README if it is stored separately.
-
-## Limitations and Ethical Considerations
-
-- The dataset contains a limited number of demographic and lifestyle variables.
-- Medical history, diagnoses, treatment requirements, and other potential determinants of healthcare costs are not represented in the available features.
-- Potential outliers were retained and may influence summary statistics and prediction errors.
-- Statistical associations do not establish causal relationships.
-- Predictive performance on this dataset does not guarantee generalisability to other populations or future observations.
-- Some high-charge observations are substantially underestimated by the selected model.
-- Feature importance describes predictive contribution within the fitted model and does not demonstrate causation.
-- Insurance predictions should not be used as the sole basis for decisions that could unfairly disadvantage individuals.
-
-Further validation, broader data, and appropriate fairness assessments would be needed before using such a model in real-world insurance decisions.
+Future improvements could include user testing, improved accessibility and responsive layout, clearer explanations for charts and metrics, fairness assessment across relevant groups, validation on appropriate external data, automated tests, and documented maintenance procedures. Plots and metrics should be rechecked whenever the data, code, or model changes.
 
 ## Conclusion
 
-This project combines data cleaning, exploratory data analysis, statistical hypothesis testing, machine-learning regression, and interactive Power BI reporting to investigate healthcare insurance charges.
+Assessment 3 builds on the healthcare insurance analysis developed for Assessment 2 and extends it into a new Streamlit-based data application. The earlier analysis provides the analytical foundation; this stage focuses on dashboard development, resolving plotting issues, improving communication, and documenting the development process.
 
-The exploratory analysis identified substantial differences in charges between smokers and non-smokers and positive associations between charges and age. Statistical testing supported a significant difference between smoker groups, a moderately strong positive monotonic association between age and charges, and a weak positive monotonic association between BMI and charges.
+The earlier analysis found substantially higher observed charges among smokers, a moderately strong positive association between age and charges, and a weak positive association between BMI and charges. Gradient Boosting achieved an R² of 0.8960 on the recorded held-out test set, although some high-charge cases were underestimated. These results should be communicated with appropriate qualifications.
 
-Gradient Boosting was selected as the leading candidate following five-fold cross-validation and achieved an R² of 0.8960 on the held-out test set. However, residual analysis showed that some high-charge observations were substantially underestimated. Smoking status, age, and BMI were the most influential features in the permutation-importance analysis.
+A useful data application requires more than charts or a predictive model. It also requires a clear purpose, an appropriate audience, reliable implementation, iterative development, transparent acknowledgement of reused work and AI assistance, and careful consideration of ethical, legal, and social implications.
 
-The Power BI report provides an interactive way to explore customer characteristics, charge distributions, and model errors. Together, the notebooks and dashboard demonstrate an end-to-end data analytics workflow while highlighting the importance of data quality, appropriate statistical interpretation, model evaluation, and responsible use of predictions.
-
-## AI Tools and Acknowledgements
-
-### AI-assisted support
-
-ChatGPT and Copilot were used as supporting tools during project development for activities such as clarifying assessment requirements, reviewing code, improving documentation, and checking grammar and spelling. The project author is responsible for reviewing the code, analytical decisions, results, and interpretations.
-
-### Acknowledgements
+## References and Acknowledgements
 
 - **Code Institute** — course materials, project template, and assessment guidance.
-- **Kaggle** — source of the healthcare insurance dataset used for the analysis.
+- **Kaggle** — source of the healthcare insurance dataset used in the analysis.
 - **Data Analytics course** — learning support and feedback.
+- **ChatGPT and Copilot** — supporting tools used for Streamlit development, code assistance, debugging, code adjustments, and documentation.
+
+Acknowledge any external code, tutorials, libraries, or other material used in the final application in accordance with the course's academic-integrity guidance.
 
 ## Author
 
